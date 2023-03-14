@@ -7,7 +7,8 @@ Use your own webhook in a .env file or contact Joseph Supples for access to the 
 
 # Steps to run
 run `npm install` to install dependencies\
-run `npm start` to start the server
+run `npm start` to start the server\
+Send POST requests to localhost:3000/api
 
 # POST Request
 POST requests are expected in the following format:
