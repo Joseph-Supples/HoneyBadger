@@ -31,7 +31,7 @@ async function sendSlackMessage(message) {
       "text": message
     })
     // if response status is 200, message sent successfully
-    if(response.status == 200){
+    if (response.status == 200) {
       console.log("Message sent successfully")
     }
     else {
@@ -48,15 +48,21 @@ async function sendSlackMessage(message) {
 }
 
 function convertDateTime(dateTime) {
-  let date = new Date(dateTime)
-  let year = date.getUTCFullYear()
-  let month = date.getUTCMonth() + 1
-  let day = date.getUTCDate()
-  let hour = date.getUTCHours()
-  let minute = date.getUTCMinutes()
-  let second = date.getUTCSeconds()
-  let formattedDateTime =  month + "-" + day + "-" + year + " at "+ hour + ":" + minute + ":" + second + " UTC"
-  return formattedDateTime
+  if (dateTime.includes("Z")) {
+    let date = new Date(dateTime)
+    let year = date.getUTCFullYear()
+    let month = date.getUTCMonth() + 1
+    let day = date.getUTCDate()
+    let hour = date.getUTCHours()
+    let minute = date.getUTCMinutes()
+    let second = date.getUTCSeconds()
+    let formattedDateTime = month + "-" + day + "-" + year + " at " + hour + ":" + minute + ":" + second + " UTC"
+    return formattedDateTime
+  }
+  else {
+    console.log("dateTime is not in UTC format")
+    return dateTime
+  }
 }
 
 
@@ -66,21 +72,26 @@ app.post("/api", async (req, res) => {
     // check if request has body
     if (req.body) {
       // check if the request is a spam notification
+      if (req.body.Type == undefined) {
+        res.status(400).send("Does not contain a Type field, unable to determine if Spam Notification");
+      }
       if (req.body.Type == "SpamNotification") {
+        const email = req.body.Email ?? "No Email Provided"
+        const description = req.body.Description ?? "No Description Provided"
         const dateTime = convertDateTime(req.body.BouncedAt)
-        const message = "New Spam Notification from email: " + req.body.Email +
-          " on " + dateTime + "\nDescription: " + req.body.Description
+        const message = "New Spam Notification from email: " + email +
+          " on " + dateTime + "\nDescription: " + description
         const response = await sendSlackMessage(message)
         // if message sent successfully, send 200 response
-        if(response.status == 200){
-        res.status(200).send("Spam Notification Sent to Slack");
+        if (response.status == 200) {
+          res.status(200).send("Spam Notification Sent to Slack");
         }
         else {
           res.status(500).send("Spam Notification Not Sent to Slack");
         }
       }
       else {
-        res.send("Not a Spam Notification");
+        res.status(400).send("Not a Spam Notification");
       }
     }
 
