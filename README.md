@@ -1,4 +1,4 @@
-# Spam Reporting endpoint for Slack
+# Spam Reporting Endpoint for Slack
 
 This is a basic implementation of a spam reporting endpoint for Slack.\
 POST requests sent to this endpoint with a Type of SpamNotification will be sent to a Slack Channel. \
@@ -7,7 +7,7 @@ Use your own webhook in a .env file or contact Joseph Supples for access to the 
 
 # Steps to run
 run `npm install` to install dependencies\
-run `npm start` to start the server\
+run `npm start` to start the server
 
 # POST Request
 POST requests are expected in the following format:
@@ -26,4 +26,4 @@ POST requests are expected in the following format:
 }
 ```
 Type, Description, Email, BouncedAt, are expected in POST request to prevent unexpected results\
-The other fields are optional.\
+The other fields are optional.
